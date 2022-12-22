@@ -7,7 +7,7 @@ CONTAINER=$(shell docker ps | grep ${CONTAINER_NAME})
 #--volume="Host_Pc_Path:Container_Path:Permissions"
 
 DOCKER_VOLUMES= \
-	--volume="flows:/data:rw"
+	--volume="${PWD}/flows:/data:rw"
 #--volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
 #--volume="/usr/share/icons:/usr/share/icons:ro" \
 
@@ -36,7 +36,7 @@ list:
 setup:
 
 start: setup
-	@docker run -it --net=host ${DOCKER_ARGS} ${CONTAINER_NAME} bash
+	docker run -it --net=host ${DOCKER_ARGS} ${CONTAINER_NAME} bash
 
 run:
 	@docker exec -it $(word 10,${CONTAINER_NAME}) bash
