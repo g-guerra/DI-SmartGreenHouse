@@ -8,6 +8,22 @@
         "env": []
     },
     {
+        "id": "979f66af87c3405b",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "769424f789a8cae0",
+        "type": "tab",
+        "label": "Flow 3",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "05a898277f7030d9",
         "type": "websocket-listener",
         "path": "/ws/publishMessage",
@@ -21,43 +37,14 @@
         "wholemsg": "false"
     },
     {
-        "id": "fb9f59a989eec8ea",
-        "type": "inject",
-        "z": "10acdf134f09496b",
-        "name": "Tick every 5 secs",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "5",
-        "crontab": "",
-        "once": false,
-        "onceDelay": "",
-        "topic": "test",
-        "payload": "",
-        "payloadType": "date",
-        "x": 190,
-        "y": 260,
-        "wires": [
-            [
-                "66844de1f4f53a29"
-            ]
-        ]
-    },
-    {
         "id": "66844de1f4f53a29",
         "type": "websocket out",
         "z": "10acdf134f09496b",
         "name": "",
         "server": "2cca224ba1e28d70",
         "client": "",
-        "x": 690,
-        "y": 260,
+        "x": 1660,
+        "y": 440,
         "wires": []
     },
     {
@@ -65,6 +52,8 @@
         "type": "http response",
         "z": "10acdf134f09496b",
         "name": "",
+        "statusCode": "",
+        "headers": {},
         "x": 661,
         "y": 200,
         "wires": []
@@ -94,7 +83,7 @@
         "fieldType": "msg",
         "format": "html",
         "syntax": "mustache",
-        "template": "<!DOCTYPE HTML>\n<html>\n    <head>\n    <title>Simple Live Display</title>\n    <script type=\"text/javascript\">\n        var ws;\n        var wsUri = \"ws:\";\n        var loc = window.location;\n        console.log(loc);\n        if (loc.protocol === \"https:\") { wsUri = \"wss:\"; }\n        // This needs to point to the web socket in the Node-RED flow\n        // ... in this case it's ws/simple\n        wsUri += \"//\" + loc.host + loc.pathname.replace(\"simple\",\"ws/simple\");\n\n        function wsConnect() {\n            console.log(\"connect\",wsUri);\n            ws = new WebSocket(wsUri);\n            //var line = \"\";    // either uncomment this for a building list of messages\n            ws.onmessage = function(msg) {\n                var line = \"\";  // or uncomment this to overwrite the existing message\n                // parse the incoming message as a JSON object\n                var data = msg.data;\n                //console.log(data);\n                // build the output from the topic and payload parts of the object\n                line += \"<p>\"+data+\"</p>\";\n                // replace the messages div with the new \"line\"\n                document.getElementById('messages').innerHTML = line;\n                //ws.send(JSON.stringify({data:data}));\n            }\n            ws.onopen = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"connected\";\n                //ws.send(\"Open for data\");\n                console.log(\"connected\");\n            }\n            ws.onclose = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"not connected\";\n                // in case of lost connection tries to reconnect every 3 secs\n                setTimeout(wsConnect,3000);\n            }\n        }\n        \n        function doit(m) {\n            if (ws) { ws.send(m); }\n        }\n    </script>\n    </head>\n    <body onload=\"wsConnect();\" onunload=\"ws.disconnect();\">\n        <font face=\"Arial\">\n        <h1>Simple Live Display</h1>\n        <div id=\"messages\"></div>\n        <button type=\"button\" onclick='doit(\"click\");'>Click to send message</button>\n        <hr/>\n        <div id=\"status\">unknown</div>\n        </font>\n    </body>\n</html>\n",
+        "template": "<!DOCTYPE HTML>\n<html>\n    <head>\n    <title>Controlo da Estufa</title>\n    <script type=\"text/javascript\">\n        var ws;\n        var wsUri = \"ws:\";\n        var loc = window.location;\n        console.log(loc);\n        if (loc.protocol === \"https:\") { wsUri = \"wss:\"; }\n        // This needs to point to the web socket in the Node-RED flow\n        // ... in this case it's ws/simple\n        wsUri += \"//\" + loc.host + loc.pathname.replace(\"simple\",\"ws/simple\");\n\n        function wsConnect() {\n            console.log(\"connect\",wsUri);\n            ws = new WebSocket(wsUri);\n            //var line = \"\";    // either uncomment this for a building list of messages\n            ws.onmessage = function(msg) {\n                var line = \"\";  // or uncomment this to overwrite the existing message\n                // parse the incoming message as a JSON object\n                var data = msg.data;\n                //console.log(data);\n                // build the output from the topic and payload parts of the object\n                line += \"<p>\"+data+\"</p>\";\n                // replace the messages div with the new \"line\"\n                document.getElementById('messages').innerHTML = line;\n                //ws.send(JSON.stringify({data:data}));\n            }\n            ws.onopen = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"connected\";\n                //ws.send(\"Open for data\");\n                console.log(\"connected\");\n            }\n            ws.onclose = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"not connected\";\n                // in case of lost connection tries to reconnect every 3 secs\n                setTimeout(wsConnect,3000);\n            }\n        }\n        \n        function doit(m) {\n            if (ws) { ws.send(m); }\n        }\n    </script>\n    </head>\n    <body onload=\"wsConnect();\" onunload=\"ws.disconnect();\">\n        <font face=\"Arial\">\n        <h1>Controlo de Estufa</h1>\n        <div id=\"messages\"></div>\n        <button type=\"button\" onclick='doit(\"Carregou no botão\");'>Click to send message</button>\n        <hr/>\n        <div id=\"status\">unknown</div>\n        </font>\n    </body>\n</html>\n",
         "x": 489,
         "y": 200,
         "wires": [
@@ -110,8 +99,8 @@
         "name": "",
         "server": "2cca224ba1e28d70",
         "client": "",
-        "x": 477,
-        "y": 312,
+        "x": 340,
+        "y": 280,
         "wires": [
             [
                 "97253f0520123187"
@@ -124,10 +113,15 @@
         "z": "10acdf134f09496b",
         "name": "",
         "active": true,
-        "console": "false",
-        "complete": "false",
-        "x": 667,
-        "y": 312,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 530,
+        "y": 280,
         "wires": []
     },
     {
@@ -165,10 +159,164 @@
         "maxConnectionsPerEndpoint": 20,
         "maxMessageSize": 4096,
         "maxBufferSize": 4096,
-        "x": 440,
-        "y": 400,
+        "x": 480,
+        "y": 380,
         "wires": [
             []
+        ]
+    },
+    {
+        "id": "5b4774a6a304603d",
+        "type": "random",
+        "z": "10acdf134f09496b",
+        "name": "Criador de Temperatura ",
+        "low": 1,
+        "high": "100",
+        "inte": "true",
+        "property": "payload",
+        "x": 570,
+        "y": 520,
+        "wires": [
+            [
+                "921a98835e1b8944"
+            ]
+        ]
+    },
+    {
+        "id": "be595e7fd5b839c6",
+        "type": "inject",
+        "z": "10acdf134f09496b",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "3",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 350,
+        "y": 520,
+        "wires": [
+            [
+                "5b4774a6a304603d"
+            ]
+        ]
+    },
+    {
+        "id": "921a98835e1b8944",
+        "type": "function",
+        "z": "10acdf134f09496b",
+        "name": "function 1",
+        "func": "flow.set('random1',msg.payload);\n//msg.payload = {'random1': msg.payload};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 520,
+        "wires": [
+            [
+                "43d288a9a0ab19d8"
+            ]
+        ]
+    },
+    {
+        "id": "43d288a9a0ab19d8",
+        "type": "random",
+        "z": "10acdf134f09496b",
+        "name": "Criador de Humidade",
+        "low": "30",
+        "high": "60",
+        "inte": "true",
+        "property": "payload",
+        "x": 980,
+        "y": 520,
+        "wires": [
+            [
+                "66e02b3d95d42f6e"
+            ]
+        ]
+    },
+    {
+        "id": "66e02b3d95d42f6e",
+        "type": "function",
+        "z": "10acdf134f09496b",
+        "name": "function 2",
+        "func": "flow.set('random2',msg.payload);\nmsg.payload = {'random2': msg.payload};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 520,
+        "wires": [
+            [
+                "4cefc50e10fa2faa"
+            ]
+        ]
+    },
+    {
+        "id": "4cefc50e10fa2faa",
+        "type": "function",
+        "z": "10acdf134f09496b",
+        "name": "function 3",
+        "func": "msg.payload={'Temperatura':flow.get('random1'), 'Humidade':flow.get('random2')};\nmsg.headers={\"Content-type\":\"application/json\"}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1340,
+        "y": 520,
+        "wires": [
+            [
+                "585c8b1e034dfc11"
+            ]
+        ]
+    },
+    {
+        "id": "e9ef9d6c4e54ac43",
+        "type": "debug",
+        "z": "10acdf134f09496b",
+        "name": "msg.payload",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1650,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "585c8b1e034dfc11",
+        "type": "json",
+        "z": "10acdf134f09496b",
+        "name": "",
+        "property": "payload",
+        "action": "str",
+        "pretty": false,
+        "x": 1470,
+        "y": 520,
+        "wires": [
+            [
+                "e9ef9d6c4e54ac43",
+                "66844de1f4f53a29"
+            ]
         ]
     }
 ]
