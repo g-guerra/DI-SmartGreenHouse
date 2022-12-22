@@ -39,9 +39,9 @@
         "once": false,
         "onceDelay": "",
         "topic": "test",
-        "payload": "hhhhhhh",
-        "payloadType": "str",
-        "x": 290,
+        "payload": "",
+        "payloadType": "date",
+        "x": 190,
         "y": 260,
         "wires": [
             [
