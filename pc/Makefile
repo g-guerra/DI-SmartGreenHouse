@@ -7,7 +7,7 @@ CONTAINER=$(shell docker ps | grep ${CONTAINER_NAME})
 #--volume="Host_Pc_Path:Container_Path:Permissions"
 
 DOCKER_VOLUMES= \
-	--volume="/home/guerra/universidade/DI/estufa/pc/flows:/data:rw"
+	--volume="flows:/data:rw"
 #--volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
 #--volume="/usr/share/icons:/usr/share/icons:ro" \
 
