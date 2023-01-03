@@ -515,8 +515,8 @@
     "node-red-node-random": {
         "name": "node-red-node-random",
         "version": "0.4.1",
-        "local": true,
-        "user": true,
+        "local": false,
+        "user": false,
         "nodes": {
             "random": {
                 "name": "random",
@@ -524,29 +524,10 @@
                     "random"
                 ],
                 "enabled": true,
-                "local": true,
+                "local": false,
                 "user": false,
                 "module": "node-red-node-random",
-                "file": "/data/node_modules/node-red-node-random/random.js"
-            }
-        }
-    },
-    "node-red-contrib-light-transition": {
-        "name": "node-red-contrib-light-transition",
-        "version": "1.7.4",
-        "local": true,
-        "user": true,
-        "nodes": {
-            "light-transition": {
-                "name": "light-transition",
-                "types": [
-                    "light-transition"
-                ],
-                "enabled": true,
-                "local": true,
-                "user": false,
-                "module": "node-red-contrib-light-transition",
-                "file": "/data/node_modules/node-red-contrib-light-transition/light-transition.js"
+                "file": "/usr/src/node-red/node_modules/node-red-node-random/random.js"
             }
         }
     }

@@ -37,6 +37,18 @@
         "wholemsg": "false"
     },
     {
+        "id": "5c4bb0592350c339",
+        "type": "OpcUa-Endpoint",
+        "endpoint": "opc.tcp://192.168.1.203:4840",
+        "secpol": "None",
+        "secmode": "None",
+        "none": true,
+        "login": false,
+        "usercert": false,
+        "usercertificate": "",
+        "userprivatekey": ""
+    },
+    {
         "id": "66844de1f4f53a29",
         "type": "websocket out",
         "z": "10acdf134f09496b",
@@ -123,47 +135,6 @@
         "x": 530,
         "y": 280,
         "wires": []
-    },
-    {
-        "id": "2d6ba8f82d55032c",
-        "type": "OpcUa-Server",
-        "z": "10acdf134f09496b",
-        "port": "53880",
-        "name": "",
-        "endpoint": "",
-        "users": "users.json",
-        "nodesetDir": "",
-        "folderName4PKI": "",
-        "autoAcceptUnknownCertificate": true,
-        "registerToDiscovery": true,
-        "constructDefaultAddressSpace": true,
-        "allowAnonymous": true,
-        "endpointNone": true,
-        "endpointSign": true,
-        "endpointSignEncrypt": true,
-        "endpointBasic128Rsa15": true,
-        "endpointBasic256": true,
-        "endpointBasic256Sha256": true,
-        "maxNodesPerBrowse": 0,
-        "maxNodesPerHistoryReadData": 0,
-        "maxNodesPerHistoryReadEvents": 0,
-        "maxNodesPerHistoryUpdateData": 0,
-        "maxNodesPerRead": 0,
-        "maxNodesPerWrite": 0,
-        "maxNodesPerMethodCall": 0,
-        "maxNodesPerRegisterNodes": 0,
-        "maxNodesPerNodeManagement": 0,
-        "maxMonitoredItemsPerCall": 0,
-        "maxNodesPerHistoryUpdateEvents": 0,
-        "maxNodesPerTranslateBrowsePathsToNodeIds": 0,
-        "maxConnectionsPerEndpoint": 20,
-        "maxMessageSize": 4096,
-        "maxBufferSize": 4096,
-        "x": 480,
-        "y": 380,
-        "wires": [
-            []
-        ]
     },
     {
         "id": "5b4774a6a304603d",
@@ -317,6 +288,29 @@
                 "e9ef9d6c4e54ac43",
                 "66844de1f4f53a29"
             ]
+        ]
+    },
+    {
+        "id": "13dd4b351a6d1b5b",
+        "type": "OpcUa-Client",
+        "z": "10acdf134f09496b",
+        "endpoint": "5c4bb0592350c339",
+        "action": "read",
+        "deadbandtype": "a",
+        "deadbandvalue": 1,
+        "time": 10,
+        "timeUnit": "s",
+        "certificate": "n",
+        "localfile": "",
+        "localkeyfile": "",
+        "securitymode": "None",
+        "securitypolicy": "None",
+        "folderName4PKI": "",
+        "name": "",
+        "x": 460,
+        "y": 360,
+        "wires": [
+            []
         ]
     }
 ]
