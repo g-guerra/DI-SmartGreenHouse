@@ -54,8 +54,10 @@ def mqtt_start():
 # uamethod automatically converts variants
 @uamethod
 def toggle_ventoinha(parent):
+
     client.publish(topic_ventoinha_override)
     print("Clicou")
+    return
 
 
 def opcua_start():

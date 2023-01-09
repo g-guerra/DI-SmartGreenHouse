@@ -24,6 +24,13 @@
         "env": []
     },
     {
+        "id": "4d24eae5.3b9b24",
+        "type": "tab",
+        "label": "METHOD TESTS",
+        "disabled": false,
+        "info": ""
+    },
+    {
         "id": "05a898277f7030d9",
         "type": "websocket-listener",
         "path": "/ws/publishMessage",
@@ -59,6 +66,14 @@
         "usercert": false,
         "usercertificate": "",
         "userprivatekey": ""
+    },
+    {
+        "id": "cd011dd0.e86e",
+        "type": "OpcUa-Endpoint",
+        "endpoint": "opc.tcp://H7Q8Q13.mshome.net:53530/OPCUA/SimulationServer",
+        "secpol": "None",
+        "secmode": "None",
+        "login": false
     },
     {
         "id": "7f96da0591a0b36a",
@@ -106,38 +121,6 @@
         ]
     },
     {
-        "id": "61af9870694ff43a",
-        "type": "websocket in",
-        "z": "10acdf134f09496b",
-        "name": "",
-        "server": "2cca224ba1e28d70",
-        "client": "",
-        "x": 249,
-        "y": 200,
-        "wires": [
-            [
-                "97253f0520123187"
-            ]
-        ]
-    },
-    {
-        "id": "97253f0520123187",
-        "type": "debug",
-        "z": "10acdf134f09496b",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 439,
-        "y": 200,
-        "wires": []
-    },
-    {
         "id": "044531eb5b42fb0a",
         "type": "debug",
         "z": "979f66af87c3405b",
@@ -180,7 +163,8 @@
         "wires": [
             [
                 "f4207e6fea66d41a",
-                "12db42d15fce766a"
+                "12db42d15fce766a",
+                "fcae8b8d55dde3e8"
             ]
         ]
     },
@@ -259,31 +243,13 @@
         "name": "",
         "server": "2cca224ba1e28d70",
         "client": "",
-        "x": 260,
-        "y": 540,
+        "x": 240,
+        "y": 580,
         "wires": [
             [
-                "485d4da5d093608e",
                 "fcae8b8d55dde3e8"
             ]
         ]
-    },
-    {
-        "id": "485d4da5d093608e",
-        "type": "debug",
-        "z": "979f66af87c3405b",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 450,
-        "y": 500,
-        "wires": []
     },
     {
         "id": "fcae8b8d55dde3e8",
@@ -315,31 +281,8 @@
         "y": 580,
         "wires": [
             [
-                "16eb493c8a99c290"
+                "93737e2a9cba3a1f"
             ]
-        ]
-    },
-    {
-        "id": "16eb493c8a99c290",
-        "type": "OpcUa-Client",
-        "z": "979f66af87c3405b",
-        "endpoint": "646fa01d53ed7b65",
-        "action": "write",
-        "deadbandtype": "a",
-        "deadbandvalue": 1,
-        "time": 10,
-        "timeUnit": "s",
-        "certificate": "n",
-        "localfile": "",
-        "localkeyfile": "",
-        "securitymode": "None",
-        "securitypolicy": "None",
-        "folderName4PKI": "",
-        "name": "",
-        "x": 720,
-        "y": 580,
-        "wires": [
-            []
         ]
     },
     {
@@ -366,10 +309,26 @@
         "y": 360,
         "wires": [
             [
-                "b6b463aced53119a",
-                "044531eb5b42fb0a"
+                "b6b463aced53119a"
             ]
         ]
+    },
+    {
+        "id": "93737e2a9cba3a1f",
+        "type": "debug",
+        "z": "979f66af87c3405b",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 580,
+        "wires": []
     },
     {
         "id": "2276ec17a10baee2",
@@ -549,5 +508,131 @@
         "wires": [
             []
         ]
+    },
+    {
+        "id": "9b199c7f.82f47",
+        "type": "OpcUa-Method",
+        "z": "4d24eae5.3b9b24",
+        "endpoint": "cd011dd0.e86e",
+        "objectId": "ns=5;s=MyDevice",
+        "methodId": "ns=5;s=MyMethod",
+        "name": "Prosys MyMethod(sin, 3.3)",
+        "inputArguments": [],
+        "arg0name": "Operator",
+        "arg0type": "String",
+        "arg0typeid": "",
+        "arg0value": "sin",
+        "arg1name": "Value",
+        "arg1type": "Double",
+        "arg1typeid": "",
+        "arg1value": "3.3",
+        "arg2name": "",
+        "arg2type": "",
+        "arg2typeid": "",
+        "arg2value": "",
+        "out0name": "",
+        "out0type": "",
+        "out0typeid": "",
+        "out0value": "",
+        "x": 760,
+        "y": 120,
+        "wires": [
+            [
+                "aad9fc2a.a94b4"
+            ]
+        ]
+    },
+    {
+        "id": "2337d4d6.fd29dc",
+        "type": "inject",
+        "z": "4d24eae5.3b9b24",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "Test1",
+        "payload": "",
+        "payloadType": "str",
+        "x": 210,
+        "y": 120,
+        "wires": [
+            [
+                "9b199c7f.82f47"
+            ]
+        ]
+    },
+    {
+        "id": "aad9fc2a.a94b4",
+        "type": "debug",
+        "z": "4d24eae5.3b9b24",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1010,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "892ea475.154008",
+        "type": "function",
+        "z": "4d24eae5.3b9b24",
+        "name": "pow",
+        "func": "msg.objectId=\"ns=5;s=MyDevice\";\nmsg.methodId=\"ns=5;s=MyMethod\";\nmsg.inputArguments=[{dataType: \"String\", value:\"pow\"}, {dataType:\"Double\", value: 3}];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 450,
+        "y": 180,
+        "wires": [
+            [
+                "9b199c7f.82f47"
+            ]
+        ]
+    },
+    {
+        "id": "4d72774f.c4c9a8",
+        "type": "inject",
+        "z": "4d24eae5.3b9b24",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "Test2",
+        "payload": "",
+        "payloadType": "str",
+        "x": 210,
+        "y": 180,
+        "wires": [
+            [
+                "892ea475.154008"
+            ]
+        ]
+    },
+    {
+        "id": "b55d1c05.9588c",
+        "type": "comment",
+        "z": "4d24eae5.3b9b24",
+        "name": "Call method by node parameters",
+        "info": "",
+        "x": 410,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "80ce9863.0c99f8",
+        "type": "comment",
+        "z": "4d24eae5.3b9b24",
+        "name": "Call method by injecting message",
+        "info": "",
+        "x": 410,
+        "y": 220,
+        "wires": []
     }
 ]
