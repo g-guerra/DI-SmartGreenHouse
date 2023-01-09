@@ -16,6 +16,14 @@
         "env": []
     },
     {
+        "id": "32475c0d051dcd20",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
         "id": "05a898277f7030d9",
         "type": "websocket-listener",
         "path": "/ws/publishMessage",
@@ -41,12 +49,12 @@
         "userprivatekey": ""
     },
     {
-        "id": "a5fa9e01.cfaf6",
+        "id": "646fa01d53ed7b65",
         "type": "OpcUa-Endpoint",
-        "endpoint": "opc.tcp://192.168.5.228:4840",
+        "endpoint": "opc.tcp://192.168.1.178:4840/UA/rasp",
         "secpol": "None",
-        "secmode": "NONE",
-        "none": false,
+        "secmode": "None",
+        "none": true,
         "login": false,
         "usercert": false,
         "usercertificate": "",
@@ -88,7 +96,7 @@
         "fieldType": "msg",
         "format": "html",
         "syntax": "mustache",
-        "template": "<!DOCTYPE HTML>\n<html>\n    <head>\n    <title>Controlo da Estufa</title>\n    <script type=\"text/javascript\">\n        var ws;\n        var wsUri = \"ws:\";\n        var loc = window.location;\n        console.log(loc);\n        if (loc.protocol === \"https:\") { wsUri = \"wss:\"; }\n        // This needs to point to the web socket in the Node-RED flow\n        // ... in this case it's ws/simple\n        wsUri += \"//\" + loc.host + loc.pathname.replace(\"simple\",\"ws/simple\");\n\n        function wsConnect() {\n            console.log(\"connect\",wsUri);\n            ws = new WebSocket(wsUri);\n            //var line = \"\";    // either uncomment this for a building list of messages\n            ws.onmessage = function(msg) {\n                var line = \"\";  // or uncomment this to overwrite the existing message\n                // parse the incoming message as a JSON object\n                var data = msg.data;\n                //console.log(data);\n                // build the output from the topic and payload parts of the object\n                line += \"<p>Temperature: \"+data+\" °C</p>\";\n                // replace the messages div with the new \"line\"\n                document.getElementById('messages').innerHTML = line;\n                //ws.send(JSON.stringify({data:data}));\n            }\n            ws.onopen = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"connected\";\n                //ws.send(\"Open for data\");\n                console.log(\"connected\");\n            }\n            ws.onclose = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"not connected\";\n                // in case of lost connection tries to reconnect every 3 secs\n                setTimeout(wsConnect,3000);\n            }\n        }\n        \n        function doit(m) {\n            if (ws) { ws.send(m); }\n        }\n    </script>\n    </head>\n    <body onload=\"wsConnect();\" onunload=\"ws.disconnect();\">\n        <font face=\"Arial\">\n        <h1>Controlo de Estufa</h1>\n        <div id=\"messages\"></div>\n        <button type=\"button\" onclick='doit(\"Carregou no botão\");'>Click to send message</button>\n        <hr/>\n        <div id=\"status\">unknown</div>\n        </font>\n    </body>\n</html>\n",
+        "template": "<!DOCTYPE HTML>\n<html>\n    <head>\n    <title>Controlo da Estufa</title>\n    <script type=\"text/javascript\">\n        var ws;\n        var wsUri = \"ws:\";\n        var loc = window.location;\n        console.log(loc);\n        if (loc.protocol === \"https:\") { wsUri = \"wss:\"; }\n        // This needs to point to the web socket in the Node-RED flow\n        // ... in this case it's ws/simple\n        wsUri += \"//\" + loc.host + loc.pathname.replace(\"simple\",\"ws/simple\");\n\n        function wsConnect() {\n            console.log(\"connect\",wsUri);\n            ws = new WebSocket(wsUri);\n            //var line = \"\";    // either uncomment this for a building list of messages\n            ws.onmessage = function(msg) {\n                var values = []\n                var line = \"\";  // or uncomment this to overwrite the existing message\n                // parse the incoming message as a JSON object\n                var data = msg.data;\n                //console.log(data);\n                // build the output from the topic and payload parts of the object\n                values = data.split('\\n')\n                line += \"<p>Temperature: \"+values[0]+\" °C</p>\\n\";\n                line += \"<p>Fan: \"+values[1]+\"</p>\";\n                // replace the messages div with the new \"line\"\n                document.getElementById('messages').innerHTML = line;\n                //ws.send(JSON.stringify({data:data}));\n            }\n            ws.onopen = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"connected\";\n                //ws.send(\"Open for data\");\n                console.log(\"connected\");\n            }\n            ws.onclose = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"not connected\";\n                // in case of lost connection tries to reconnect every 3 secs\n                setTimeout(wsConnect,3000);\n            }\n        }\n        \n        function doit(m) {\n            if (ws) { ws.send(m); }\n        }\n    </script>\n    </head>\n    <body onload=\"wsConnect();\" onunload=\"ws.disconnect();\">\n        <font face=\"Arial\">\n        <h1>Controlo de Estufa</h1>\n        <div id=\"messages\"></div>\n        <button type=\"button\" onclick='doit(\"Carregou no botão\");'>Click to send message</button>\n        <hr/>\n        <div id=\"status\">unknown</div>\n        </font>\n    </body>\n</html>\n",
         "x": 398,
         "y": 120,
         "wires": [
@@ -142,8 +150,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 760,
-        "y": 340,
+        "x": 980,
+        "y": 360,
         "wires": []
     },
     {
@@ -171,7 +179,8 @@
         "y": 340,
         "wires": [
             [
-                "f4207e6fea66d41a"
+                "f4207e6fea66d41a",
+                "12db42d15fce766a"
             ]
         ]
     },
@@ -179,8 +188,8 @@
         "id": "f4207e6fea66d41a",
         "type": "OpcUa-Item",
         "z": "979f66af87c3405b",
-        "item": "ns=2;i=2",
-        "datatype": "Double",
+        "item": "ns=2;i=4",
+        "datatype": "Float",
         "value": "",
         "name": "",
         "x": 400,
@@ -195,7 +204,7 @@
         "id": "3e04ac89f28c9da9",
         "type": "OpcUa-Client",
         "z": "979f66af87c3405b",
-        "endpoint": "5c4bb0592350c339",
+        "endpoint": "646fa01d53ed7b65",
         "action": "read",
         "deadbandtype": "a",
         "deadbandvalue": 1,
@@ -208,37 +217,182 @@
         "securitypolicy": "None",
         "folderName4PKI": "",
         "name": "",
-        "x": 580,
-        "y": 340,
+        "x": 600,
+        "y": 360,
         "wires": [
             [
-                "044531eb5b42fb0a",
-                "b6b463aced53119a"
+                "059ca9fca48dcb53"
+            ]
+        ]
+    },
+    {
+        "id": "b6b463aced53119a",
+        "type": "websocket out",
+        "z": "979f66af87c3405b",
+        "name": "",
+        "server": "2cca224ba1e28d70",
+        "client": "",
+        "x": 1000,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "12db42d15fce766a",
+        "type": "OpcUa-Item",
+        "z": "979f66af87c3405b",
+        "item": "ns=2;i=5",
+        "datatype": "Float",
+        "value": "",
+        "name": "",
+        "x": 400,
+        "y": 400,
+        "wires": [
+            [
+                "3e04ac89f28c9da9"
+            ]
+        ]
+    },
+    {
+        "id": "33d2ed9f95ad75ff",
+        "type": "websocket in",
+        "z": "979f66af87c3405b",
+        "name": "",
+        "server": "2cca224ba1e28d70",
+        "client": "",
+        "x": 260,
+        "y": 540,
+        "wires": [
+            [
+                "485d4da5d093608e",
+                "fcae8b8d55dde3e8"
+            ]
+        ]
+    },
+    {
+        "id": "485d4da5d093608e",
+        "type": "debug",
+        "z": "979f66af87c3405b",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 450,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "fcae8b8d55dde3e8",
+        "type": "OpcUa-Method",
+        "z": "979f66af87c3405b",
+        "endpoint": "646fa01d53ed7b65",
+        "objectId": "ns=2;i=3",
+        "methodId": "ns=2;i=6",
+        "name": "",
+        "inputArguments": [],
+        "outputArguments": [],
+        "arg0name": "",
+        "arg0type": "",
+        "arg0typeid": "",
+        "arg0value": "",
+        "arg1name": "",
+        "arg1type": "",
+        "arg1typeid": "",
+        "arg1value": "",
+        "arg2name": "",
+        "arg2type": "",
+        "arg2typeid": "",
+        "arg2value": "",
+        "out0name": "",
+        "out0type": "",
+        "out0typeid": "",
+        "out0value": "",
+        "x": 490,
+        "y": 580,
+        "wires": [
+            [
+                "16eb493c8a99c290"
+            ]
+        ]
+    },
+    {
+        "id": "16eb493c8a99c290",
+        "type": "OpcUa-Client",
+        "z": "979f66af87c3405b",
+        "endpoint": "646fa01d53ed7b65",
+        "action": "write",
+        "deadbandtype": "a",
+        "deadbandvalue": 1,
+        "time": 10,
+        "timeUnit": "s",
+        "certificate": "n",
+        "localfile": "",
+        "localkeyfile": "",
+        "securitymode": "None",
+        "securitypolicy": "None",
+        "folderName4PKI": "",
+        "name": "",
+        "x": 720,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "059ca9fca48dcb53",
+        "type": "join",
+        "z": "979f66af87c3405b",
+        "name": "",
+        "mode": "custom",
+        "build": "string",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 770,
+        "y": 360,
+        "wires": [
+            [
+                "b6b463aced53119a",
+                "044531eb5b42fb0a"
             ]
         ]
     },
     {
         "id": "2276ec17a10baee2",
         "type": "websocket out",
-        "z": "979f66af87c3405b",
+        "z": "32475c0d051dcd20",
         "name": "",
         "server": "2cca224ba1e28d70",
         "client": "",
-        "x": 780,
-        "y": 560,
+        "x": 840,
+        "y": 440,
         "wires": []
     },
     {
         "id": "bbbe68066bfac31d",
         "type": "random",
-        "z": "979f66af87c3405b",
+        "z": "32475c0d051dcd20",
         "name": "Criador de Temperatura ",
         "low": 1,
         "high": "100",
         "inte": "true",
         "property": "payload",
-        "x": 470,
-        "y": 460,
+        "x": 530,
+        "y": 340,
         "wires": [
             [
                 "cbd56f6e0a4cf068"
@@ -248,7 +402,7 @@
     {
         "id": "f84ea87afa064801",
         "type": "inject",
-        "z": "979f66af87c3405b",
+        "z": "32475c0d051dcd20",
         "name": "",
         "props": [
             {
@@ -266,8 +420,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 250,
-        "y": 460,
+        "x": 310,
+        "y": 340,
         "wires": [
             []
         ]
@@ -275,7 +429,7 @@
     {
         "id": "cbd56f6e0a4cf068",
         "type": "function",
-        "z": "979f66af87c3405b",
+        "z": "32475c0d051dcd20",
         "name": "function 4",
         "func": "flow.set('random1',msg.payload);\n//msg.payload = {'random1': msg.payload};\nreturn msg;",
         "outputs": 1,
@@ -283,8 +437,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 680,
-        "y": 460,
+        "x": 740,
+        "y": 340,
         "wires": [
             [
                 "31968c365b82b49b"
@@ -294,14 +448,14 @@
     {
         "id": "31968c365b82b49b",
         "type": "random",
-        "z": "979f66af87c3405b",
+        "z": "32475c0d051dcd20",
         "name": "Criador de Humidade",
         "low": "30",
         "high": "60",
         "inte": "true",
         "property": "payload",
-        "x": 880,
-        "y": 460,
+        "x": 940,
+        "y": 340,
         "wires": [
             [
                 "481790b90fe4a676"
@@ -311,7 +465,7 @@
     {
         "id": "481790b90fe4a676",
         "type": "function",
-        "z": "979f66af87c3405b",
+        "z": "32475c0d051dcd20",
         "name": "function 5",
         "func": "flow.set('random2',msg.payload);\nmsg.payload = {'random2': msg.payload};\nreturn msg;",
         "outputs": 1,
@@ -319,8 +473,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 300,
-        "y": 640,
+        "x": 360,
+        "y": 520,
         "wires": [
             [
                 "6de234658a1a321b"
@@ -330,7 +484,7 @@
     {
         "id": "6de234658a1a321b",
         "type": "function",
-        "z": "979f66af87c3405b",
+        "z": "32475c0d051dcd20",
         "name": "function 6",
         "func": "msg.payload={'Temperatura':flow.get('random1'), 'Humidade':flow.get('random2')};\nmsg.headers={\"Content-type\":\"application/json\"}\nreturn msg;",
         "outputs": 1,
@@ -338,8 +492,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 460,
-        "y": 640,
+        "x": 520,
+        "y": 520,
         "wires": [
             [
                 "93f05a4bd09f5d3a"
@@ -349,7 +503,7 @@
     {
         "id": "29b6b9d69c9f9656",
         "type": "debug",
-        "z": "979f66af87c3405b",
+        "z": "32475c0d051dcd20",
         "name": "msg.payload",
         "active": true,
         "tosidebar": true,
@@ -359,20 +513,20 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 770,
-        "y": 700,
+        "x": 830,
+        "y": 580,
         "wires": []
     },
     {
         "id": "93f05a4bd09f5d3a",
         "type": "json",
-        "z": "979f66af87c3405b",
+        "z": "32475c0d051dcd20",
         "name": "",
         "property": "payload",
         "action": "str",
         "pretty": false,
-        "x": 590,
-        "y": 640,
+        "x": 650,
+        "y": 520,
         "wires": [
             [
                 "29b6b9d69c9f9656"
@@ -380,14 +534,20 @@
         ]
     },
     {
-        "id": "b6b463aced53119a",
-        "type": "websocket out",
-        "z": "979f66af87c3405b",
-        "name": "",
-        "server": "2cca224ba1e28d70",
-        "client": "",
-        "x": 780,
-        "y": 260,
-        "wires": []
+        "id": "c4c44ed0521b59e7",
+        "type": "function",
+        "z": "32475c0d051dcd20",
+        "name": "function 7",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 140,
+        "wires": [
+            []
+        ]
     }
 ]

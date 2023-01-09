@@ -1,17 +1,19 @@
 from paho.mqtt import client as mqtt_client
 import sys
 import time
-from opcua import ua, Server
+from opcua import ua, Server, uamethod
 import random
 
-sys.path.insert(0, "..")
 
 broker = "localhost"
 port = 1883
-topic = "testTopic"
+topic_temperature = "temperatura/value"
+topic_ventoinha = "ventoinha/value"
+topic_ventoinha_override = "ventoinha/override"
 
 client_id = f"python-mqtt-{random.randint(0, 1000)}"
-message = "6.7"
+msg_temperatura = float("6.7")
+msg_ventoinha = False
 
 
 def connect_mqtt():
@@ -29,22 +31,34 @@ def connect_mqtt():
 
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
-        global message
-        print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-        message = msg.payload.decode()
+        global msg_temperatura
+        global msg_ventoinha
+        # print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+        if msg.topic == topic_temperature:
+            msg_temperatura = msg.payload.decode()
+        if msg.topic == topic_ventoinha:
+            msg_ventoinha = msg.payload.decode()
 
-    client.subscribe(topic)
+    client.subscribe(topic_temperature)
+    client.subscribe(topic_ventoinha)
     client.on_message = on_message
 
 
-def run():
+def mqtt_start():
     client = connect_mqtt()
     subscribe(client)
     client.loop_start()
 
 
-if __name__ == "__main__":
+# OPC UA Method
+# uamethod automatically converts variants
+@uamethod
+def toggle_ventoinha(parent):
+    client.publish(topic_ventoinha_override)
+    print("Clicou")
 
+
+def opcua_start():
     # setup our server
     server = Server()
     server.set_endpoint("opc.tcp://0.0.0.0:4840/UA/rasp")
@@ -53,26 +67,34 @@ if __name__ == "__main__":
     uri = "http://examples.freeopcua.github.io"
     idx = server.register_namespace(uri)
 
-    # get Objects node, this is where we should put our nodes
     objects = server.get_objects_node()
 
-    # populating our address space
-    myobj = objects.add_object(idx, "MyObject")
-    myvar = myobj.add_variable(idx, "Temp", 6.7)
-    myvar.set_writable()  # Set MyVariable to be writable by clients
+    types = server.get_node(ua.ObjectIds.BaseObjectType)
 
-    run()
+    # Definir um novo tipo de objeto para a estufa
+    # server.get_root_node().get_child(["0:Types", "0:ObjectTypes", "0:BaseObjectType"])
+    estufa_type = types.add_object_type(idx, "Estufa")
+    estufa_type.add_variable(0, "Temperatura", float(
+        msg_temperatura)).set_modelling_rule(True)
+    estufa_type.add_variable(1, "VentoinhaStatus",
+                             bool(msg_ventoinha)).set_modelling_rule(True)
+    estufa_type.add_method(2, "VentoinhaOverride",
+                           toggle_ventoinha).set_modelling_rule(True)
 
-    # starting!
+    # Adicionar um objeto do tipo estufa ao address space
+    my_obj = objects.add_object(idx, "Estufa", estufa_type.nodeid)
+    variables = my_obj.get_variables()
     server.start()
+    while True:
+        variables[0].set_value(float(msg_temperatura))
+        variables[1].set_value(msg_ventoinha)
+        pass
 
-    try:
-        count = 0
-        while True:
-            time.sleep(1)
-            myvar.set_value(float(message))
-            print(float(message))
 
-    finally:
-        # close connection, remove subcsriptions, etc
-        server.stop()
+if __name__ == "__main__":
+
+    # MQTT Start
+    mqtt_start()
+
+    # OPCUA Start
+    opcua_start()
