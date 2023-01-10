@@ -1,29 +1,32 @@
-from paho.mqtt import client as mqtt_client
+import random
 import sys
 import time
-from opcua import ua, Server, uamethod
-import random
 
+from opcua import Server, ua, uamethod
+from paho.mqtt import client as mqtt_client
 
 broker = "localhost"
 port = 1883
 topic_temperature = "temperatura/value"
 topic_ventoinha = "ventoinha/value"
-topic_ventoinha_override = "ventoinha/override"
+topic_ventoinha_mode = "ventoinha/mode"
+topic_ventoinha_control = "ventoinha/control"
 
 client_id = f"python-mqtt-{random.randint(0, 1000)}"
+client = mqtt_client.Client(client_id)
+
 msg_temperatura = float("6.7")
 msg_ventoinha = False
 
 
 def connect_mqtt():
+    global client
+
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
             print("Connected to MQTT Broker!")
         else:
             print("Failed to connect, return code %d\n", rc)
-
-    client = mqtt_client.Client(client_id)
     client.on_connect = on_connect
     client.connect(broker, port)
     return client
@@ -33,7 +36,7 @@ def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         global msg_temperatura
         global msg_ventoinha
-        # print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+        #print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
         if msg.topic == topic_temperature:
             msg_temperatura = msg.payload.decode()
         if msg.topic == topic_ventoinha:
@@ -53,10 +56,16 @@ def mqtt_start():
 # OPC UA Method
 # uamethod automatically converts variants
 @uamethod
-def toggle_ventoinha(parent):
-
-    client.publish(topic_ventoinha_override)
-    print("Clicou")
+def publish_mqtt(parent, command):
+    if command == "manual":
+        client.publish(topic_ventoinha_mode, "manual")
+    elif command == "auto":
+        client.publish(topic_ventoinha_mode, "auto")
+    elif command == "on":
+        client.publish(topic_ventoinha_control, "on")
+    elif command == "off":
+        client.publish(topic_ventoinha_control, "off")
+    print(command)
     return
 
 
@@ -74,14 +83,13 @@ def opcua_start():
     types = server.get_node(ua.ObjectIds.BaseObjectType)
 
     # Definir um novo tipo de objeto para a estufa
-    # server.get_root_node().get_child(["0:Types", "0:ObjectTypes", "0:BaseObjectType"])
     estufa_type = types.add_object_type(idx, "Estufa")
     estufa_type.add_variable(0, "Temperatura", float(
         msg_temperatura)).set_modelling_rule(True)
-    estufa_type.add_variable(1, "VentoinhaStatus",
+    estufa_type.add_variable(1, "VentoinhaState",
                              bool(msg_ventoinha)).set_modelling_rule(True)
     estufa_type.add_method(2, "VentoinhaOverride",
-                           toggle_ventoinha).set_modelling_rule(True)
+                           publish_mqtt, [ua.VariantType.String]).set_modelling_rule(True)
 
     # Adicionar um objeto do tipo estufa ao address space
     my_obj = objects.add_object(idx, "Estufa", estufa_type.nodeid)

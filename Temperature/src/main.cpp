@@ -5,17 +5,23 @@
 #include <Wire.h>
 
 #define FAN_PIN 4
-#define TEMP_MAX 28
-#define TEMP_MIN 25
-// SSID/Password combination
-// const char *ssid = "nao_abrir";
-// const char *password = "qwertyuiop";
-// const char *mqtt_server = "192.168.5.228";
-const char *ssid = "NetFixe";
-const char *password = "1DA7FFD5BB";
-const char *mqtt_server = "192.168.1.178";
+#define TEMP_MAX 24
+#define TEMP_MIN 22
 
-const char *fan_override_topic = "ventoinha/override";
+enum fan_modes
+{
+  AUTO,
+  MANUAL,
+  ON,
+  OFF
+};
+// SSID/Password combination
+const char *ssid = "nao_abrir";
+const char *password = "qwertyuiop";
+const char *mqtt_server = "192.168.2.228";
+
+const char *fan_control_topic = "ventoinha/control";
+const char *fan_mode_topic = "ventoinha/mode";
 const char *fan_value_topic = "ventoinha/value";
 const char *temperature_value_topic = "temperatura/value";
 
@@ -23,17 +29,17 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 long lastMsg = 0;
 char msg[50];
-int value = 0;
 
 // Create the MCP9808 temperature sensor object
 Adafruit_MCP9808 temperature_sensor = Adafruit_MCP9808();
-bool fan_status = false;
-bool fan_override = false;
+
+enum fan_modes fan_state = OFF;
+enum fan_modes fan_mode = AUTO;
 
 void setup_wifi();
 void callback(char *topic, byte *message, unsigned int length);
 void reconnect();
-void fan_control(float);
+void fan_control(char *, float);
 
 void setup()
 {
@@ -63,23 +69,22 @@ void loop()
 
   // Read and print out the temperature, then convert to C
   char temp_string[8];
+  char fan_string[15];
 
   float temp_c = temperature_sensor.readTempC();
 
   dtostrf(temp_c, 1, 2, temp_string);
   // End temperatue check
 
-  fan_control(temp_c);
+  fan_control(fan_string, temp_c);
 
   client.publish(temperature_value_topic, temp_string);
-  Serial.print(fan_status ? "True" : "False");
-  client.publish(fan_value_topic, fan_status ? "True" : "False");
+  client.publish(fan_value_topic, fan_string);
 
   Serial.print("Temp: ");
   Serial.print(temp_c);
   Serial.print(" C\t");
-  Serial.print("Fan: ");
-  Serial.print(fan_status);
+  Serial.printf("Fan: %s", fan_string);
   Serial.print("\n");
 
   delay(250);
@@ -105,8 +110,6 @@ void setup_wifi()
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
-
-  pinMode(FAN_PIN, OUTPUT);
 }
 
 void callback(char *topic, byte *message, unsigned int length)
@@ -123,11 +126,27 @@ void callback(char *topic, byte *message, unsigned int length)
   }
   Serial.println();
 
-  // Changes the override value
-  if (String(topic) == fan_override_topic)
+  if (String(topic) == fan_mode_topic)
   {
-    fan_override = !fan_override;
-    Serial.print("Changing fan override");
+    if (messageTemp == "manual")
+    {
+      fan_mode = MANUAL;
+    }
+    else if (messageTemp == "auto")
+    {
+      fan_mode = AUTO;
+    }
+  }
+  if (String(topic) == fan_control_topic)
+  {
+    if (messageTemp == "on")
+    {
+      fan_state = ON;
+    }
+    else if (messageTemp == "off")
+    {
+      fan_state = OFF;
+    }
   }
 }
 
@@ -142,7 +161,8 @@ void reconnect()
     {
       Serial.println("connected");
       // Subscribe
-      client.subscribe(fan_override_topic);
+      client.subscribe(fan_mode_topic);
+      client.subscribe(fan_control_topic);
     }
     else
     {
@@ -155,16 +175,32 @@ void reconnect()
   }
 }
 
-void fan_control(float temp_c)
+void fan_control(char *fan_string, float temp_c)
 {
-  if (fan_override == true)
+  if (fan_mode == MANUAL)
   {
-    fan_status = false;
-    return;
+    if (fan_state == ON)
+    {
+      digitalWrite(FAN_PIN, HIGH);
+      strcpy(fan_string, "manual, on");
+    }
+    else
+    {
+      digitalWrite(FAN_PIN, LOW);
+      strcpy(fan_string, "manual, off");
+    }
   }
-  if (temp_c > TEMP_MAX)
-    fan_status = true;
-  if (temp_c < TEMP_MIN)
-    fan_status = false;
-  digitalWrite(FAN_PIN, fan_status);
+  else
+  {
+    if (temp_c > TEMP_MAX)
+    {
+      digitalWrite(FAN_PIN, HIGH);
+      strcpy(fan_string, "auto, on");
+    }
+    if (temp_c < TEMP_MIN)
+    {
+      digitalWrite(FAN_PIN, LOW);
+      strcpy(fan_string, "auto, off");
+    }
+  }
 }
