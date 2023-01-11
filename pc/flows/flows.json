@@ -16,21 +16,6 @@
         "env": []
     },
     {
-        "id": "32475c0d051dcd20",
-        "type": "tab",
-        "label": "Flow 1",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
-        "id": "0fe644d6ef1784a3",
-        "type": "tab",
-        "label": "METHOD TESTS",
-        "disabled": false,
-        "info": ""
-    },
-    {
         "id": "d906bab5cf3df0b4",
         "type": "tab",
         "label": "METHOD TESTS",
@@ -38,11 +23,12 @@
         "info": ""
     },
     {
-        "id": "9412633a5f7c754d",
+        "id": "c84ec8e1f06ef67a",
         "type": "tab",
-        "label": "METHOD TESTS",
+        "label": "Flow 1",
         "disabled": false,
-        "info": ""
+        "info": "",
+        "env": []
     },
     {
         "id": "05a898277f7030d9",
@@ -104,8 +90,8 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 570,
-        "y": 120,
+        "x": 850,
+        "y": 100,
         "wires": []
     },
     {
@@ -116,26 +102,28 @@
         "url": "/simple",
         "method": "get",
         "swaggerDoc": "",
-        "x": 201,
-        "y": 120,
+        "x": 110,
+        "y": 100,
         "wires": [
             [
-                "dacef3f6dd1028a2"
+                "743ca79a590ce3a0"
             ]
         ]
     },
     {
-        "id": "dacef3f6dd1028a2",
-        "type": "template",
+        "id": "743ca79a590ce3a0",
+        "type": "file in",
         "z": "10acdf134f09496b",
-        "name": "Simple Web Page",
-        "field": "payload",
-        "fieldType": "msg",
-        "format": "html",
-        "syntax": "mustache",
-        "template": "<!DOCTYPE HTML>\n<html>\n\n<head>\n    <title>Controlo da Estufa</title>\n    <style>\n        .content {\n            width: 100px;\n            height: 65px;\n            border: 1px solid grey;\n            position: relative;\n            bottom: 10px;\n            float: right;\n            font-size: 15px;\n            padding: 10px;\n        }\n\n        p {\n            position: relative;\n            top: -20px;\n        }\n    </style>\n    <script type=\"text/javascript\">\n        var ws;\n        var wsUri = \"ws:\";\n        var loc = window.location;\n        console.log(loc);\n        if (loc.protocol === \"https:\") { wsUri = \"wss:\"; }\n        // This needs to point to the web socket in the Node-RED flow\n        // ... in this case it's ws/simple\n        wsUri += \"//\" + loc.host + loc.pathname.replace(\"simple\",\"ws/simple\");\n\n        function wsConnect() {\n            console.log(\"connect\",wsUri);\n            ws = new WebSocket(wsUri);\n            //var line = \"\";    // either uncomment this for a building list of messages\n            ws.onmessage = function(msg) {\n                var values = []\n                var line = \"\";  // or uncomment this to overwrite the existing message\n                // parse the incoming message as a JSON object\n                var data = msg.data;\n                //console.log(data);\n                // build the output from the topic and payload parts of the object\n                values = data.split(\"\\n\");\n                line += \"<p>Temperatura: \"+values[0]+\" °C</p>\\n\";\n                line += \"<p>Ventoinha: \"+values[1]+\"</p>\";\n                \n                // replace the messages div with the new \"line\"\n                document.getElementById('messages').innerHTML = line;\n                //ws.send(JSON.stringify({data:data}));\n            }\n            ws.onopen = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"connected\";\n                //ws.send(\"Open for data\");\n                console.log(\"connected\");\n            }\n            ws.onclose = function() {\n                // update the status div with the connection status\n                document.getElementById('status').innerHTML = \"not connected\";\n                // in case of lost connection tries to reconnect every 3 secs\n                setTimeout(wsConnect,3000);\n            }\n        }\n        \n        function doit(m) {\n            if (ws) { ws.send(m); }\n        }\n    </script>\n</head>\n\n<body onload=\"wsConnect();\" onunload=\"ws.disconnect();\">\n    <div class=\"content\">\n        <p>Beatriz Freitas PG47050<br>Gonçalo Guerra PG47217</p>\n    </div>\n    <font face=\"Arial\">\n        <h1>Controlo de Estufa</h1>\n        <div id=\"messages\"></div>\n        <div>\n        <p> Modo de operação </p>\n        <button type=\"button\" onclick='doit(\"manual\");'>Manual</button>\n        <button type=\"button\" onclick='doit(\"auto\");'>Auto</button>\n        </div>\n        <div>\n            <p> Controlo Ventoinha </p>\n        <button type=\"button\" onclick='doit(\"on\");'>Ligar Ventoinha</button>\n        <button type=\"button\" onclick='doit(\"off\");'>Desligar Ventoinha</button>\n        </div>\n        <hr />\n        <div id=\"status\">unknown</div>\n    </font>\n\n</body>\n\n</html>",
-        "x": 398,
-        "y": 120,
+        "name": "",
+        "filename": "/data/webpage/webpage.html",
+        "filenameType": "str",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "allProps": false,
+        "x": 460,
+        "y": 100,
         "wires": [
             [
                 "7f96da0591a0b36a"
@@ -290,7 +278,7 @@
         "type": "debug",
         "z": "979f66af87c3405b",
         "name": "debug 2",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -367,185 +355,6 @@
             [
                 "a29ead8b9b84a115"
             ]
-        ]
-    },
-    {
-        "id": "2276ec17a10baee2",
-        "type": "websocket out",
-        "z": "32475c0d051dcd20",
-        "name": "",
-        "server": "2cca224ba1e28d70",
-        "client": "",
-        "x": 840,
-        "y": 440,
-        "wires": []
-    },
-    {
-        "id": "bbbe68066bfac31d",
-        "type": "random",
-        "z": "32475c0d051dcd20",
-        "name": "Criador de Temperatura ",
-        "low": 1,
-        "high": "100",
-        "inte": "true",
-        "property": "payload",
-        "x": 530,
-        "y": 340,
-        "wires": [
-            [
-                "cbd56f6e0a4cf068"
-            ]
-        ]
-    },
-    {
-        "id": "f84ea87afa064801",
-        "type": "inject",
-        "z": "32475c0d051dcd20",
-        "name": "",
-        "props": [
-            {
-                "p": "payload"
-            },
-            {
-                "p": "topic",
-                "vt": "str"
-            }
-        ],
-        "repeat": "3",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 310,
-        "y": 340,
-        "wires": [
-            []
-        ]
-    },
-    {
-        "id": "cbd56f6e0a4cf068",
-        "type": "function",
-        "z": "32475c0d051dcd20",
-        "name": "function 4",
-        "func": "flow.set('random1',msg.payload);\n//msg.payload = {'random1': msg.payload};\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 740,
-        "y": 340,
-        "wires": [
-            [
-                "31968c365b82b49b"
-            ]
-        ]
-    },
-    {
-        "id": "31968c365b82b49b",
-        "type": "random",
-        "z": "32475c0d051dcd20",
-        "name": "Criador de Humidade",
-        "low": "30",
-        "high": "60",
-        "inte": "true",
-        "property": "payload",
-        "x": 940,
-        "y": 340,
-        "wires": [
-            [
-                "481790b90fe4a676"
-            ]
-        ]
-    },
-    {
-        "id": "481790b90fe4a676",
-        "type": "function",
-        "z": "32475c0d051dcd20",
-        "name": "function 5",
-        "func": "flow.set('random2',msg.payload);\nmsg.payload = {'random2': msg.payload};\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 360,
-        "y": 520,
-        "wires": [
-            [
-                "6de234658a1a321b"
-            ]
-        ]
-    },
-    {
-        "id": "6de234658a1a321b",
-        "type": "function",
-        "z": "32475c0d051dcd20",
-        "name": "function 6",
-        "func": "msg.payload={'Temperatura':flow.get('random1'), 'Humidade':flow.get('random2')};\nmsg.headers={\"Content-type\":\"application/json\"}\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 520,
-        "y": 520,
-        "wires": [
-            [
-                "93f05a4bd09f5d3a"
-            ]
-        ]
-    },
-    {
-        "id": "29b6b9d69c9f9656",
-        "type": "debug",
-        "z": "32475c0d051dcd20",
-        "name": "msg.payload",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 830,
-        "y": 580,
-        "wires": []
-    },
-    {
-        "id": "93f05a4bd09f5d3a",
-        "type": "json",
-        "z": "32475c0d051dcd20",
-        "name": "",
-        "property": "payload",
-        "action": "str",
-        "pretty": false,
-        "x": 650,
-        "y": 520,
-        "wires": [
-            [
-                "29b6b9d69c9f9656"
-            ]
-        ]
-    },
-    {
-        "id": "c4c44ed0521b59e7",
-        "type": "function",
-        "z": "32475c0d051dcd20",
-        "name": "function 7",
-        "func": "\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 420,
-        "y": 140,
-        "wires": [
-            []
         ]
     },
     {
@@ -666,62 +475,51 @@
         "wires": []
     },
     {
-        "id": "a99a9b28b35d3e5e",
-        "type": "OpcUa-Method",
-        "z": "9412633a5f7c754d",
-        "endpoint": "cd011dd0.e86e",
-        "objectId": "ns=5;s=MyDevice",
-        "methodId": "ns=5;s=MyMethod",
-        "name": "Prosys MyMethod(sin, 3.3)",
-        "inputArguments": [],
-        "arg0name": "Operator",
-        "arg0type": "String",
-        "arg0typeid": "",
-        "arg0value": "sin",
-        "arg1name": "Value",
-        "arg1type": "Double",
-        "arg1typeid": "",
-        "arg1value": "3.3",
-        "arg2name": "",
-        "arg2type": "",
-        "arg2typeid": "",
-        "arg2value": "",
-        "out0name": "",
-        "out0type": "",
-        "out0typeid": "",
-        "out0value": "",
-        "x": 760,
-        "y": 120,
+        "id": "3a58f425.e5ae4c",
+        "type": "open",
+        "z": "c84ec8e1f06ef67a",
+        "name": "",
+        "target": "",
+        "app": "",
+        "wait": false,
+        "urlencode": false,
+        "x": 590,
+        "y": 320,
         "wires": [
             [
-                "e42cc88dbb5f0c94"
+                "a018c630.e0c848"
             ]
         ]
     },
     {
-        "id": "040d5ae12619b4c5",
+        "id": "26b5b81b.5db13",
         "type": "inject",
-        "z": "9412633a5f7c754d",
-        "name": "",
+        "z": "c84ec8e1f06ef67a",
+        "name": "Open google.com using default browser",
+        "props": [
+            {
+                "p": "target",
+                "v": "https://google.com",
+                "vt": "str"
+            }
+        ],
         "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "topic": "Test1",
-        "payload": "",
-        "payloadType": "str",
-        "x": 210,
-        "y": 120,
+        "topic": "",
+        "x": 300,
+        "y": 320,
         "wires": [
             [
-                "a99a9b28b35d3e5e"
+                "3a58f425.e5ae4c"
             ]
         ]
     },
     {
-        "id": "e42cc88dbb5f0c94",
+        "id": "a018c630.e0c848",
         "type": "debug",
-        "z": "9412633a5f7c754d",
+        "z": "c84ec8e1f06ef67a",
         "name": "",
         "active": true,
         "tosidebar": true,
@@ -729,67 +527,65 @@
         "tostatus": false,
         "complete": "true",
         "targetType": "full",
-        "x": 1010,
-        "y": 120,
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 320,
         "wires": []
     },
     {
-        "id": "371ccfaea611e4de",
-        "type": "function",
-        "z": "9412633a5f7c754d",
-        "name": "pow",
-        "func": "msg.objectId=\"ns=5;s=MyDevice\";\nmsg.methodId=\"ns=5;s=MyMethod\";\nmsg.inputArguments=[{dataType: \"String\", value:\"pow\"}, {dataType:\"Double\", value: 3}];\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 450,
-        "y": 180,
-        "wires": [
-            [
-                "a99a9b28b35d3e5e"
-            ]
-        ]
-    },
-    {
-        "id": "377f7d048e9d812d",
+        "id": "f3dcdb06.f800a",
         "type": "inject",
-        "z": "9412633a5f7c754d",
-        "name": "",
+        "z": "c84ec8e1f06ef67a",
+        "name": "Open image file",
+        "props": [
+            {
+                "p": "target",
+                "v": "/path/to/image.jpeg",
+                "vt": "str"
+            }
+        ],
         "repeat": "",
         "crontab": "",
         "once": false,
         "onceDelay": 0.1,
-        "topic": "Test2",
-        "payload": "",
-        "payloadType": "str",
-        "x": 210,
-        "y": 180,
+        "topic": "",
+        "x": 380,
+        "y": 400,
         "wires": [
             [
-                "371ccfaea611e4de"
+                "3a58f425.e5ae4c"
             ]
         ]
     },
     {
-        "id": "86e0ae2ae0cc638c",
-        "type": "comment",
-        "z": "9412633a5f7c754d",
-        "name": "Call method by node parameters",
-        "info": "",
-        "x": 410,
-        "y": 80,
-        "wires": []
-    },
-    {
-        "id": "c7dd5732edbf4f10",
-        "type": "comment",
-        "z": "9412633a5f7c754d",
-        "name": "Call method by injecting message",
-        "info": "",
-        "x": 410,
-        "y": 220,
-        "wires": []
+        "id": "f55de952.472738",
+        "type": "inject",
+        "z": "c84ec8e1f06ef67a",
+        "name": "Open google.com using Chrome",
+        "props": [
+            {
+                "p": "target",
+                "v": "https://google.com",
+                "vt": "str"
+            },
+            {
+                "p": "app",
+                "v": "google chrome",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 330,
+        "y": 360,
+        "wires": [
+            [
+                "3a58f425.e5ae4c"
+            ]
+        ]
     }
 ]

@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <style>
+        .content {
+            width: 100px;
+            height: 65px;
+            border: 1px solid grey;
+            position: relative;
+            bottom: 10px;
+            float: right;
+            font-size: 15px;
+            padding: 10px;
+        }
+
+        p {
+            position: relative;
+            top: -20px;
+        }
+
+        #container {
+            height: 100%;
+            width: 100%;
+            font-size: 0;
+        }
+
+        #left,
+        #right {
+            display: inline-block;
+            *display: inline;
+            zoom: 1;
+            vertical-align: justify;
+            font-size: 12px;
+        }
+
+        #left {
+            width: 50%;
+        }
+
+        #right {
+            width: 100px;
+            height: 100px;
+            background-color: rgb(0, 0, 0);
+        }
+    </style>
+    <title>Controlo da Estufa</title>
+</head>
+
+<body onload="wsConnect();" onunload="ws.disconnect();">
+    <div class="content">
+        <p>Beatriz Freitas PG47050<br>Gonçalo Guerra PG47217</p>
+    </div>
+    <font face="Arial">
+        <h1>Controlo de Estufa</h1>
+        <div id="messages">
+            <p>Temperatura: </p>
+            <p>Ventoinha: </p>
+        </div>
+        <div>
+            <p> Modo de operação </p>
+            <button type="button" onclick='doit("manual");'>Manual</button>
+            <button type="button" onclick='doit("auto");'>Auto</button>
+            <br />
+            <br />
+        </div>
+        <div>
+            <p> Controlo Ventoinha </p>
+            <button type="button" onclick='doit("on");'>Ligar Ventoinha</button>
+            <button type="button" onclick='doit("off");'>Desligar Ventoinha</button>
+        </div>
+        <div>
+            <br />
+            <br />
+            <p> Controlo LED </p>
+            <div id="container">
+                <div id="left">
+                    <p>Vermelho: &nbsp<input type="range" min="0" max="255" step="1" value="0" class="slider"
+                            id="myRangeRed" onclick="doit('led_red_'+this.value)" onmousemove="func_1(this.value)" />
+                        <output id="valueRed"></output><br />
+                    </p>
+                    <p>Verde: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type="range" min="0" max="255" step="1"
+                            value="0" class="slider" id="myRangeGreen" onclick="doit('led_green_'+this.value)"
+                            onmousemove="func_2(this.value)" />
+                        <output id="valueGreen"></output><br />
+                    </p>
+                    <p>Azul: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type="range" min="0" max="255" step="1"
+                            value="0" class="slider" id="myRangeBlue" onclick="doit('led_blue_'+this.value)"
+                            onmousemove="func_3(this.value)" />
+                        <output id="valueBlue"></output><br />
+                    </p>
+                </div>
+                <div id="right"></div>
+            </div>
+            <button type="button" onclick='doit("led_on");'>Ligar LED</button>
+            <button type="button" onclick='doit("led_off");'>Desligar LED</button>
+        </div>
+        <div id="status">unknown</div>
+    </font>
+    <script type="text/javascript">
+        var valueRed = document.querySelector("#valueRed");
+        var inputRed = document.querySelector("#myRangeRed");
+
+        var valueGreen = document.querySelector("#valueGreen");
+        var inputGreen = document.querySelector("#myRangeGreen");
+
+        var valueBlue = document.querySelector("#valueBlue");
+        var inputBlue = document.querySelector("#myRangeBlue");
+
+        valueRed.textContent = inputRed.value;
+        valueGreen.textContent = inputGreen.value;
+        valueBlue.textContent = inputBlue.value;
+
+        inputRed.addEventListener("input", (event) => {
+            valueRed.textContent = event.target.value;
+        });
+        inputGreen.addEventListener("input", (event) => { valueGreen.textContent = event.target.value });
+        inputBlue.addEventListener("input", (event) => { valueBlue.textContent = event.target.value });
+    </script>
+    <script type="text/javascript">
+        window.red = 0;
+        window.green = 0;
+        window.blue = 0;
+        function func_1(value) {
+            window.red = value;
+            change_bg();
+        }
+        function func_2(value) {
+            window.green = value;
+            change_bg();
+        }
+        function func_3(value) {
+            window.blue = value;
+            change_bg();
+        }
+        function change_bg() {
+            document.getElementById("right").style.backgroundColor = "rgb(" + window.red + "," + window.green + "," + window.blue + ")";
+        }
+    </script>
+    <script type="text/javascript">
+        var ws;
+        var wsUri = "ws:";
+        var loc = window.location;
+        console.log(loc);
+        if (loc.protocol === "https:") { wsUri = "wss:"; }
+        // This needs to point to the web socket in the Node-RED flow
+        // ... in this case it's ws/simple
+        wsUri += "//" + loc.host + loc.pathname.replace("simple", "ws/simple");
+
+        function wsConnect() {
+            console.log("connect", wsUri);
+            ws = new WebSocket(wsUri);
+            //var line = "";    // either uncomment this for a building list of messages
+            ws.onmessage = function (msg) {
+                var values = []
+                var line = "";  // or uncomment this to overwrite the existing message
+                // parse the incoming message as a JSON object
+                var data = msg.data;
+                //console.log(data);
+                // build the output from the topic and payload parts of the object
+                values = data.split("\n");
+                line += "<p>Temperatura: " + values[0] + " °C</p>\n";
+                line += "<p>Ventoinha: " + values[1] + "</p>";
+
+                // replace the messages div with the new "line"
+                document.getElementById('messages').innerHTML = line;
+            }
+            ws.onopen = function () {
+                // update the status div with the connection status
+                document.getElementById('status').innerHTML = "connected";
+                //ws.send("Open for data");
+                console.log("connected");
+            }
+            ws.onclose = function () {
+                // update the status div with the connection status
+                document.getElementById('status').innerHTML = "not connected";
+                // in case of lost connection tries to reconnect every 3 secs
+                setTimeout(wsConnect, 3000);
+            }
+        }
+
+        function doit(m) {
+            if (ws) { ws.send(m); }
+        }
+    </script>
+</body>
+
+</html>

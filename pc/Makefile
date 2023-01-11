@@ -39,4 +39,4 @@ start: setup
 	@docker run -it --net=host ${DOCKER_ARGS} ${CONTAINER_NAME} bash
 
 run:
-	@docker exec -it $(word 10,${CONTAINER_NAME}) bash
+	@docker exec -it $(word 12,${CONTAINER}) bash

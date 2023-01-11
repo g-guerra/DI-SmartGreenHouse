@@ -530,5 +530,24 @@
                 "file": "/usr/src/node-red/node_modules/node-red-node-random/random.js"
             }
         }
+    },
+    "node-red-contrib-open": {
+        "name": "node-red-contrib-open",
+        "version": "1.0.0",
+        "local": false,
+        "user": false,
+        "nodes": {
+            "open": {
+                "name": "open",
+                "types": [
+                    "open"
+                ],
+                "enabled": true,
+                "local": false,
+                "user": false,
+                "module": "node-red-contrib-open",
+                "file": "/usr/src/node-red/node_modules/node-red-contrib-open/src/open.js"
+            }
+        }
     }
 }
