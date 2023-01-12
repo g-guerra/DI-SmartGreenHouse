@@ -101,7 +101,7 @@ def opcua_start():
         msg_temperatura)).set_modelling_rule(True)
     estufa_type.add_variable(1, "VentoinhaState",
                              bool(msg_ventoinha)).set_modelling_rule(True)
-    estufa_type.add_method(2, "VentoinhaOverride",
+    estufa_type.add_method(2, "PublishMQTT",
                            publish_mqtt, [ua.VariantType.String]).set_modelling_rule(True)
 
     # Adicionar um objeto do tipo estufa ao address space

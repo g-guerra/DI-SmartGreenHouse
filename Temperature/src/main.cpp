@@ -3,6 +3,7 @@
 #include <PubSubClient.h>
 #include <WiFi.h>
 #include <Wire.h>
+#include <string.h>
 
 #define FAN_PIN 4
 #define TEMP_MAX 29
@@ -15,7 +16,7 @@
 #define GREEN_CHANNEL 4
 #define BLUE_CHANNEL 5
 
-enum fan_modes
+enum modes
 {
   AUTO,
   MANUAL,
@@ -26,12 +27,14 @@ enum fan_modes
 // SSID/Password combination
 const char *ssid = "nao_abrir";
 const char *password = "qwertyuiop";
-const char *mqtt_server = "192.168.213.228";
+const char *mqtt_server = "192.168.158.228";
 
 const char *fan_control_topic = "ventoinha/control";
 const char *fan_mode_topic = "ventoinha/mode";
 const char *fan_value_topic = "ventoinha/value";
 const char *temperature_value_topic = "temperatura/value";
+const char *led_control_topic = "led/control";
+const char *led_value_topic = "led/value";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -41,12 +44,17 @@ char msg[50];
 // Create the MCP9808 temperature sensor object
 Adafruit_MCP9808 temperature_sensor = Adafruit_MCP9808();
 
-enum fan_modes fan_state = OFF;
-enum fan_modes fan_mode = AUTO;
+enum modes fan_state = OFF;
+enum modes fan_mode = AUTO;
+enum modes led_state = OFF;
+int red_value = 0;
+int green_value = 0;
+int blue_value = 0;
 
 void setup_wifi();
 void callback(char *topic, byte *message, unsigned int length);
 void reconnect();
+void led_control();
 void fan_control(char *, float);
 
 void setup()
@@ -73,10 +81,6 @@ void setup()
   ledcAttachPin(RED_PIN, RED_CHANNEL);
   ledcAttachPin(GREEN_PIN, GREEN_CHANNEL);
   ledcAttachPin(BLUE_PIN, BLUE_CHANNEL);
-
-  ledcWrite(RED_CHANNEL, 255);
-  ledcWrite(GREEN_CHANNEL, 255);
-  ledcWrite(BLUE_CHANNEL, 255);
 }
 
 void loop()
@@ -97,6 +101,7 @@ void loop()
   // End temperatue check
 
   fan_control(fan_string, temp_c);
+  led_control();
 
   client.publish(temperature_value_topic, temp_string);
   client.publish(fan_value_topic, fan_string);
@@ -168,6 +173,32 @@ void callback(char *topic, byte *message, unsigned int length)
       fan_state = OFF;
     }
   }
+  if (String(topic) == led_control_topic)
+  {
+    if (messageTemp == "on")
+    {
+      led_state = ON;
+    }
+    else if (messageTemp == "off")
+    {
+      led_state = OFF;
+    }
+  }
+  if (String(topic) == led_value_topic)
+  {
+    if (messageTemp.charAt(0) == 'r')
+    {
+      red_value = messageTemp.substring(3).toInt();
+    }
+    if (messageTemp.charAt(0) == 'g')
+    {
+      green_value = messageTemp.substring(5).toInt();
+    }
+    if (messageTemp.charAt(0) == 'b')
+    {
+      blue_value = messageTemp.substring(4).toInt();
+    }
+  }
 }
 
 void reconnect()
@@ -183,6 +214,8 @@ void reconnect()
       // Subscribe
       client.subscribe(fan_mode_topic);
       client.subscribe(fan_control_topic);
+      client.subscribe(led_control_topic);
+      client.subscribe(led_value_topic);
     }
     else
     {
@@ -194,7 +227,21 @@ void reconnect()
     }
   }
 }
-
+void led_control()
+{
+  if (led_state == ON)
+  {
+    ledcWrite(RED_CHANNEL, red_value);
+    ledcWrite(GREEN_CHANNEL, green_value);
+    ledcWrite(BLUE_CHANNEL, blue_value);
+  }
+  else
+  {
+    ledcWrite(RED_CHANNEL, 0);
+    ledcWrite(GREEN_CHANNEL, 0);
+    ledcWrite(BLUE_CHANNEL, 0);
+  }
+}
 void fan_control(char *fan_string, float temp_c)
 {
   if (fan_mode == MANUAL)
