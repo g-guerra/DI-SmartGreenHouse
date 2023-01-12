@@ -11,6 +11,8 @@ topic_temperature = "temperatura/value"
 topic_ventoinha = "ventoinha/value"
 topic_ventoinha_mode = "ventoinha/mode"
 topic_ventoinha_control = "ventoinha/control"
+topic_led_control = "led/control"
+topic_led_value = "led/value"
 
 client_id = f"python-mqtt-{random.randint(0, 1000)}"
 client = mqtt_client.Client(client_id)
@@ -27,6 +29,7 @@ def connect_mqtt():
             print("Connected to MQTT Broker!")
         else:
             print("Failed to connect, return code %d\n", rc)
+
     client.on_connect = on_connect
     client.connect(broker, port)
     return client
@@ -36,7 +39,7 @@ def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
         global msg_temperatura
         global msg_ventoinha
-        #print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+        # print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
         if msg.topic == topic_temperature:
             msg_temperatura = msg.payload.decode()
         if msg.topic == topic_ventoinha:
@@ -65,7 +68,17 @@ def publish_mqtt(parent, command):
         client.publish(topic_ventoinha_control, "on")
     elif command == "off":
         client.publish(topic_ventoinha_control, "off")
-    print(command)
+    elif command == "led_on":
+        client.publish(topic_led_control, "on")
+    elif command == "led_off":
+        client.publish(topic_led_control, "off")
+    elif "led_red" in command:
+        client.publish(topic_led_value, str("red " + command.split(" ")[1]))
+    elif "led_green" in command:
+        client.publish(topic_led_value, str("green " + command.split(" ")[1]))
+    elif "led_blue" in command:
+        client.publish(topic_led_value, str("blue " + command.split(" ")[1]))
+    # print(str("red " + command.split(" ")[1]))
     return
 
 

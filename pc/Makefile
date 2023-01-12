@@ -25,6 +25,7 @@ help:
 	@echo "Run 'make list' to list running containers"
 
 build:
+	clear
 	@echo "Building Image"
 	@docker build -t ${CONTAINER_NAME} .
 	clear
@@ -36,7 +37,9 @@ list:
 setup:
 
 start: setup
+	clear
 	@docker run -it --net=host ${DOCKER_ARGS} ${CONTAINER_NAME} bash
 
 run:
+	clear
 	@docker exec -it $(word 12,${CONTAINER}) bash

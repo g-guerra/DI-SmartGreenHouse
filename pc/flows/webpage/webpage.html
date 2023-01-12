@@ -3,6 +3,34 @@
 
 <head>
     <style>
+        body {
+            background-color: antiquewhite;
+            margin-left: 100px;
+            font-style: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        font {
+            margin-left: 50px;
+        }
+        button{
+            position: relative;
+            bottom: 20px;
+            border: none;
+            background-color: #ccc;
+            border-radius: 10px;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            color: black;
+        }
+        button:focus{
+            background-color: #737373;
+        }
+        button:hover{
+            background-color:#888;
+        }
+        button:active{
+            background-color: #737373;
+        }
         .content {
             width: 100px;
             height: 65px;
@@ -23,6 +51,8 @@
             height: 100%;
             width: 100%;
             font-size: 0;
+            position: relative;
+            top: -10px;
         }
 
         #left,
@@ -41,10 +71,13 @@
         #right {
             width: 100px;
             height: 100px;
+            position: relative;
+            /* right: 660px;
+            bottom: 10px; */
             background-color: rgb(0, 0, 0);
         }
     </style>
-    <title>Controlo da Estufa</title>
+    <title>Smart Greenhouse</title>
 </head>
 
 <body onload="wsConnect();" onunload="ws.disconnect();">
@@ -52,48 +85,47 @@
         <p>Beatriz Freitas PG47050<br>Gonçalo Guerra PG47217</p>
     </div>
     <font face="Arial">
-        <h1>Controlo de Estufa</h1>
+        <h1>Smart Greenhouse</h1>
+        <br>
         <div id="messages">
             <p>Temperatura: </p>
             <p>Ventoinha: </p>
         </div>
         <div>
+            <br>
             <p> Modo de operação </p>
-            <button type="button" onclick='doit("manual");'>Manual</button>
-            <button type="button" onclick='doit("auto");'>Auto</button>
-            <br />
-            <br />
+            <button class="button1" type="button" onclick='doit("manual");'>Manual</button>
+            <button class="button1" type="button" onclick='doit("auto");'>Auto</button>
+            <br>
         </div>
         <div>
             <p> Controlo Ventoinha </p>
-            <button type="button" onclick='doit("on");'>Ligar Ventoinha</button>
-            <button type="button" onclick='doit("off");'>Desligar Ventoinha</button>
+            <button class="button2" type="button" onclick='doit("on");'>Ligar Ventoinha</button>
+            <button class="button2" type="button" onclick='doit("off");'>Desligar Ventoinha</button>
         </div>
         <div>
-            <br />
-            <br />
             <p> Controlo LED </p>
             <div id="container">
                 <div id="left">
                     <p>Vermelho: &nbsp<input type="range" min="0" max="255" step="1" value="0" class="slider"
-                            id="myRangeRed" onclick="doit('led_red_'+this.value)" onmousemove="func_1(this.value)" />
+                            id="myRangeRed" onclick="doit('led_red '+this.value)" onmousemove="func_1(this.value)" />
                         <output id="valueRed"></output><br />
                     </p>
                     <p>Verde: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type="range" min="0" max="255" step="1"
-                            value="0" class="slider" id="myRangeGreen" onclick="doit('led_green_'+this.value)"
+                            value="0" class="slider" id="myRangeGreen" onclick="doit('led_green '+this.value)"
                             onmousemove="func_2(this.value)" />
                         <output id="valueGreen"></output><br />
                     </p>
                     <p>Azul: &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type="range" min="0" max="255" step="1"
-                            value="0" class="slider" id="myRangeBlue" onclick="doit('led_blue_'+this.value)"
+                            value="0" class="slider" id="myRangeBlue" onclick="doit('led_blue '+this.value)"
                             onmousemove="func_3(this.value)" />
                         <output id="valueBlue"></output><br />
                     </p>
                 </div>
                 <div id="right"></div>
             </div>
-            <button type="button" onclick='doit("led_on");'>Ligar LED</button>
-            <button type="button" onclick='doit("led_off");'>Desligar LED</button>
+            <button class="button3" type="button" onclick='doit("led_on");'>Ligar LED</button>
+            <button class="button3" type="button" onclick='doit("led_off");'>Desligar LED</button>
         </div>
         <div id="status">unknown</div>
     </font>

@@ -5,8 +5,15 @@
 #include <Wire.h>
 
 #define FAN_PIN 4
-#define TEMP_MAX 24
-#define TEMP_MIN 22
+#define TEMP_MAX 29
+#define TEMP_MIN 25
+
+#define RED_PIN 33
+#define GREEN_PIN 32
+#define BLUE_PIN 18
+#define RED_CHANNEL 3
+#define GREEN_CHANNEL 4
+#define BLUE_CHANNEL 5
 
 enum fan_modes
 {
@@ -15,10 +22,11 @@ enum fan_modes
   ON,
   OFF
 };
+
 // SSID/Password combination
 const char *ssid = "nao_abrir";
 const char *password = "qwertyuiop";
-const char *mqtt_server = "192.168.2.228";
+const char *mqtt_server = "192.168.213.228";
 
 const char *fan_control_topic = "ventoinha/control";
 const char *fan_mode_topic = "ventoinha/mode";
@@ -57,6 +65,18 @@ void setup()
   client.setCallback(callback);
 
   pinMode(FAN_PIN, OUTPUT);
+
+  ledcSetup(RED_CHANNEL, 5000, 8);
+  ledcSetup(GREEN_CHANNEL, 5000, 8);
+  ledcSetup(BLUE_CHANNEL, 5000, 8);
+
+  ledcAttachPin(RED_PIN, RED_CHANNEL);
+  ledcAttachPin(GREEN_PIN, GREEN_CHANNEL);
+  ledcAttachPin(BLUE_PIN, BLUE_CHANNEL);
+
+  ledcWrite(RED_CHANNEL, 255);
+  ledcWrite(GREEN_CHANNEL, 255);
+  ledcWrite(BLUE_CHANNEL, 255);
 }
 
 void loop()
