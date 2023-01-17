@@ -8,14 +8,6 @@
         "env": []
     },
     {
-        "id": "979f66af87c3405b",
-        "type": "tab",
-        "label": "OPC",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
         "id": "05a898277f7030d9",
         "type": "websocket-listener",
         "path": "/ws/publishMessage",
@@ -43,7 +35,7 @@
     {
         "id": "646fa01d53ed7b65",
         "type": "OpcUa-Endpoint",
-        "endpoint": "opc.tcp://192.168.233.228:4840/UA/rasp",
+        "endpoint": "opc.tcp://192.168.18.228:4840/UA/rasp",
         "secpol": "None",
         "secmode": "None",
         "none": true,
@@ -273,7 +265,7 @@
         "type": "debug",
         "z": "10acdf134f09496b",
         "name": "debug 4",
-        "active": false,
+        "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,

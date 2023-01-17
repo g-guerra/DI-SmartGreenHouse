@@ -27,7 +27,7 @@ enum modes
 // SSID/Password combination
 const char *ssid = "nao_abrir";
 const char *password = "qwertyuiop";
-const char *mqtt_server = "192.168.158.228";
+const char *mqtt_server = "192.168.18.228";
 
 const char *fan_control_topic = "ventoinha/control";
 const char *fan_mode_topic = "ventoinha/mode";
