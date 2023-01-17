@@ -16,21 +16,6 @@
         "env": []
     },
     {
-        "id": "d906bab5cf3df0b4",
-        "type": "tab",
-        "label": "METHOD TESTS",
-        "disabled": false,
-        "info": ""
-    },
-    {
-        "id": "c84ec8e1f06ef67a",
-        "type": "tab",
-        "label": "Flow 1",
-        "disabled": false,
-        "info": "",
-        "env": []
-    },
-    {
         "id": "05a898277f7030d9",
         "type": "websocket-listener",
         "path": "/ws/publishMessage",
@@ -58,7 +43,7 @@
     {
         "id": "646fa01d53ed7b65",
         "type": "OpcUa-Endpoint",
-        "endpoint": "opc.tcp://192.168.158.228:4840/UA/rasp",
+        "endpoint": "opc.tcp://192.168.233.228:4840/UA/rasp",
         "secpol": "None",
         "secmode": "None",
         "none": true,
@@ -90,7 +75,7 @@
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 850,
+        "x": 910,
         "y": 100,
         "wires": []
     },
@@ -102,7 +87,7 @@
         "url": "/simple",
         "method": "get",
         "swaggerDoc": "",
-        "x": 110,
+        "x": 150,
         "y": 100,
         "wires": [
             [
@@ -122,7 +107,7 @@
         "sendError": false,
         "encoding": "none",
         "allProps": false,
-        "x": 460,
+        "x": 520,
         "y": 100,
         "wires": [
             [
@@ -131,9 +116,19 @@
         ]
     },
     {
-        "id": "04afc9683bcf020d",
+        "id": "4ee2d3e64ed4c0b9",
+        "type": "comment",
+        "z": "10acdf134f09496b",
+        "name": "Pagina Web",
+        "info": "",
+        "x": 530,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "85d4b678d472c5be",
         "type": "inject",
-        "z": "979f66af87c3405b",
+        "z": "10acdf134f09496b",
         "name": "",
         "props": [
             {
@@ -151,35 +146,35 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 190,
-        "y": 180,
+        "x": 150,
+        "y": 300,
         "wires": [
             [
-                "f4207e6fea66d41a",
-                "12db42d15fce766a"
+                "51122ff6dd312e17",
+                "491d1810e7ed28bf"
             ]
         ]
     },
     {
-        "id": "f4207e6fea66d41a",
+        "id": "51122ff6dd312e17",
         "type": "OpcUa-Item",
-        "z": "979f66af87c3405b",
+        "z": "10acdf134f09496b",
         "item": "ns=2;i=5",
         "datatype": "Float",
         "value": "",
         "name": "",
-        "x": 380,
-        "y": 140,
+        "x": 340,
+        "y": 260,
         "wires": [
             [
-                "3e04ac89f28c9da9"
+                "750b5b1e2b07ea2b"
             ]
         ]
     },
     {
-        "id": "3e04ac89f28c9da9",
+        "id": "750b5b1e2b07ea2b",
         "type": "OpcUa-Client",
-        "z": "979f66af87c3405b",
+        "z": "10acdf134f09496b",
         "endpoint": "646fa01d53ed7b65",
         "action": "read",
         "deadbandtype": "a",
@@ -193,61 +188,61 @@
         "securitypolicy": "None",
         "folderName4PKI": "",
         "name": "",
-        "x": 580,
-        "y": 180,
+        "x": 540,
+        "y": 300,
         "wires": [
             [
-                "059ca9fca48dcb53"
+                "12b2838f1dcabf92"
             ]
         ]
     },
     {
-        "id": "b6b463aced53119a",
+        "id": "742cb851d60a31f5",
         "type": "websocket out",
-        "z": "979f66af87c3405b",
+        "z": "10acdf134f09496b",
         "name": "",
         "server": "2cca224ba1e28d70",
         "client": "",
-        "x": 940,
-        "y": 180,
+        "x": 880,
+        "y": 260,
         "wires": []
     },
     {
-        "id": "12db42d15fce766a",
+        "id": "491d1810e7ed28bf",
         "type": "OpcUa-Item",
-        "z": "979f66af87c3405b",
+        "z": "10acdf134f09496b",
         "item": "ns=2;i=6",
         "datatype": "String",
         "value": "",
         "name": "",
-        "x": 380,
-        "y": 220,
+        "x": 340,
+        "y": 340,
         "wires": [
             [
-                "3e04ac89f28c9da9"
+                "750b5b1e2b07ea2b"
             ]
         ]
     },
     {
-        "id": "33d2ed9f95ad75ff",
+        "id": "db5541c90e468f23",
         "type": "websocket in",
-        "z": "979f66af87c3405b",
+        "z": "10acdf134f09496b",
         "name": "",
         "server": "2cca224ba1e28d70",
         "client": "",
-        "x": 180,
-        "y": 380,
+        "x": 160,
+        "y": 460,
         "wires": [
             [
-                "93737e2a9cba3a1f",
-                "1ca8bf3c3ce42511"
+                "2d6d70fc6711e142",
+                "7a971bbe93d7e6ea"
             ]
         ]
     },
     {
-        "id": "059ca9fca48dcb53",
+        "id": "12b2838f1dcabf92",
         "type": "join",
-        "z": "979f66af87c3405b",
+        "z": "10acdf134f09496b",
         "name": "",
         "mode": "custom",
         "build": "string",
@@ -264,21 +259,21 @@
         "reduceInit": "",
         "reduceInitType": "",
         "reduceFixup": "",
-        "x": 750,
-        "y": 180,
+        "x": 710,
+        "y": 300,
         "wires": [
             [
-                "b6b463aced53119a",
-                "e0dd0bdc538d6c46"
+                "742cb851d60a31f5",
+                "2f6720ed773b8166"
             ]
         ]
     },
     {
-        "id": "93737e2a9cba3a1f",
+        "id": "2d6d70fc6711e142",
         "type": "debug",
-        "z": "979f66af87c3405b",
-        "name": "debug 2",
-        "active": true,
+        "z": "10acdf134f09496b",
+        "name": "debug 4",
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -286,15 +281,15 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 380,
-        "y": 340,
+        "x": 340,
+        "y": 420,
         "wires": []
     },
     {
-        "id": "e0dd0bdc538d6c46",
+        "id": "2f6720ed773b8166",
         "type": "debug",
-        "z": "979f66af87c3405b",
-        "name": "debug 3",
+        "z": "10acdf134f09496b",
+        "name": "debug 5",
         "active": false,
         "tosidebar": true,
         "console": false,
@@ -302,14 +297,14 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 920,
-        "y": 240,
+        "x": 860,
+        "y": 340,
         "wires": []
     },
     {
-        "id": "a29ead8b9b84a115",
+        "id": "0cb9da8e29032a34",
         "type": "OpcUa-Method",
-        "z": "979f66af87c3405b",
+        "z": "10acdf134f09496b",
         "endpoint": "646fa01d53ed7b65",
         "objectId": "ns=2;i=1",
         "methodId": "ns=2;i=2",
@@ -332,16 +327,16 @@
         "out0type": "",
         "out0typeid": "",
         "out0value": "",
-        "x": 590,
-        "y": 420,
+        "x": 530,
+        "y": 500,
         "wires": [
             []
         ]
     },
     {
-        "id": "1ca8bf3c3ce42511",
+        "id": "7a971bbe93d7e6ea",
         "type": "function",
-        "z": "979f66af87c3405b",
+        "z": "10acdf134f09496b",
         "name": "",
         "func": "msg.objectId=\"ns=2;i=1\";\nmsg.methodId =\"ns=2;i=2\";\nmsg.inputArguments=[{dataType: \"String\", value:msg.payload}];\n\nreturn msg;",
         "outputs": 1,
@@ -349,243 +344,22 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 380,
-        "y": 420,
+        "x": 340,
+        "y": 500,
         "wires": [
             [
-                "a29ead8b9b84a115"
+                "0cb9da8e29032a34"
             ]
         ]
     },
     {
-        "id": "c8f6773a4eef5c26",
-        "type": "OpcUa-Method",
-        "z": "d906bab5cf3df0b4",
-        "endpoint": "cd011dd0.e86e",
-        "objectId": "ns=5;s=MyDevice",
-        "methodId": "ns=5;s=MyMethod",
-        "name": "Prosys MyMethod(sin, 3.3)",
-        "inputArguments": [],
-        "arg0name": "Operator",
-        "arg0type": "String",
-        "arg0value": "sin",
-        "arg1name": "Value",
-        "arg1type": "Double",
-        "arg1value": "3.3",
-        "arg2name": "",
-        "arg2type": "",
-        "arg2value": "",
-        "x": 760,
-        "y": 120,
-        "wires": [
-            [
-                "b7e35129f88d91c8"
-            ]
-        ]
-    },
-    {
-        "id": "142f98aa8717bbbc",
-        "type": "inject",
-        "z": "d906bab5cf3df0b4",
-        "name": "",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "Test1",
-        "payload": "",
-        "payloadType": "str",
-        "x": 210,
-        "y": 120,
-        "wires": [
-            [
-                "c8f6773a4eef5c26"
-            ]
-        ]
-    },
-    {
-        "id": "b7e35129f88d91c8",
-        "type": "debug",
-        "z": "d906bab5cf3df0b4",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "x": 1010,
-        "y": 120,
-        "wires": []
-    },
-    {
-        "id": "79f27bbc94b8767b",
-        "type": "function",
-        "z": "d906bab5cf3df0b4",
-        "name": "pow",
-        "func": "msg.objectId=\"ns=5;s=MyDevice\";\nmsg.methodId=\"ns=5;s=MyMethod\";\nmsg.inputArguments=[{dataType: \"String\", value:\"pow\"}, {dataType:\"Double\", value: 3}];\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "x": 450,
-        "y": 180,
-        "wires": [
-            [
-                "c8f6773a4eef5c26"
-            ]
-        ]
-    },
-    {
-        "id": "388b172a3d114e3a",
-        "type": "inject",
-        "z": "d906bab5cf3df0b4",
-        "name": "",
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "Test2",
-        "payload": "",
-        "payloadType": "str",
-        "x": 210,
-        "y": 180,
-        "wires": [
-            [
-                "79f27bbc94b8767b"
-            ]
-        ]
-    },
-    {
-        "id": "253f13df8b2f7962",
+        "id": "e045631c81c3e3e7",
         "type": "comment",
-        "z": "d906bab5cf3df0b4",
-        "name": "Call method by node parameters",
+        "z": "10acdf134f09496b",
+        "name": "OPC UA",
         "info": "",
-        "x": 410,
-        "y": 80,
+        "x": 520,
+        "y": 200,
         "wires": []
-    },
-    {
-        "id": "bde327c2f1a166df",
-        "type": "comment",
-        "z": "d906bab5cf3df0b4",
-        "name": "Call method by injecting message",
-        "info": "",
-        "x": 410,
-        "y": 220,
-        "wires": []
-    },
-    {
-        "id": "3a58f425.e5ae4c",
-        "type": "open",
-        "z": "c84ec8e1f06ef67a",
-        "name": "",
-        "target": "",
-        "app": "",
-        "wait": false,
-        "urlencode": false,
-        "x": 590,
-        "y": 320,
-        "wires": [
-            [
-                "a018c630.e0c848"
-            ]
-        ]
-    },
-    {
-        "id": "26b5b81b.5db13",
-        "type": "inject",
-        "z": "c84ec8e1f06ef67a",
-        "name": "Open google.com using default browser",
-        "props": [
-            {
-                "p": "target",
-                "v": "https://google.com",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 300,
-        "y": 320,
-        "wires": [
-            [
-                "3a58f425.e5ae4c"
-            ]
-        ]
-    },
-    {
-        "id": "a018c630.e0c848",
-        "type": "debug",
-        "z": "c84ec8e1f06ef67a",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "true",
-        "targetType": "full",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 750,
-        "y": 320,
-        "wires": []
-    },
-    {
-        "id": "f3dcdb06.f800a",
-        "type": "inject",
-        "z": "c84ec8e1f06ef67a",
-        "name": "Open image file",
-        "props": [
-            {
-                "p": "target",
-                "v": "/path/to/image.jpeg",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 380,
-        "y": 400,
-        "wires": [
-            [
-                "3a58f425.e5ae4c"
-            ]
-        ]
-    },
-    {
-        "id": "f55de952.472738",
-        "type": "inject",
-        "z": "c84ec8e1f06ef67a",
-        "name": "Open google.com using Chrome",
-        "props": [
-            {
-                "p": "target",
-                "v": "https://google.com",
-                "vt": "str"
-            },
-            {
-                "p": "app",
-                "v": "google chrome",
-                "vt": "str"
-            }
-        ],
-        "repeat": "",
-        "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
-        "topic": "",
-        "x": 330,
-        "y": 360,
-        "wires": [
-            [
-                "3a58f425.e5ae4c"
-            ]
-        ]
     }
 ]
