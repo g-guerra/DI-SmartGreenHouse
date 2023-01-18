@@ -78,7 +78,6 @@ def publish_mqtt(parent, command):
         client.publish(topic_led_value, str("green " + command.split(" ")[1]))
     elif "led_blue" in command:
         client.publish(topic_led_value, str("blue " + command.split(" ")[1]))
-    # print(str("red " + command.split(" ")[1]))
     return
 
 

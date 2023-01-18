@@ -6,8 +6,8 @@
 #include <string.h>
 
 #define FAN_PIN 4
-#define TEMP_MAX 29
-#define TEMP_MIN 25
+#define TEMP_MAX 23
+#define TEMP_MIN 21
 
 #define RED_PIN 33
 #define GREEN_PIN 32
@@ -27,7 +27,7 @@ enum modes
 // SSID/Password combination
 const char *ssid = "nao_abrir";
 const char *password = "qwertyuiop";
-const char *mqtt_server = "192.168.18.228";
+const char *mqtt_server = "192.168.96.228";
 
 const char *fan_control_topic = "ventoinha/control";
 const char *fan_mode_topic = "ventoinha/mode";
@@ -208,7 +208,7 @@ void reconnect()
   {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect("ESP8266Client"))
+    if (client.connect("ESP32Client"))
     {
       Serial.println("connected");
       // Subscribe
